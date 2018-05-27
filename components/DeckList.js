@@ -12,6 +12,7 @@ class DeckList extends Component {
         return (
             <View style={{paddingBottom: 100}}>
                 <ScrollView >
+                    <Text style={[styles.DarkText, {marginTop: 20, marginLeft: 22}]}>Select a deck...</Text>
                     <DeckTab navigation={this.props.navigation} deck={testDeck1}/> 
                     <DeckTab navigation={this.props.navigation} deck={testDeck2}/> 
                     <DeckTab navigation={this.props.navigation} deck={testDeck3}/>                                                                           
@@ -20,5 +21,13 @@ class DeckList extends Component {
         )
     }
 }
+
+styles = StyleSheet.create({
+    DarkText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'rgb(100,100,100)',
+    },
+})
 
 export default DeckList;

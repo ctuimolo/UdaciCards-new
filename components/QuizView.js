@@ -1,7 +1,30 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 
+class ResultsCard extends Component {
 
+    percent = Math.round((this.props.numberCorrect / this.props.total) * 100);
+
+    render() {
+        return (
+            <ScrollView>
+                <View style={[styles.QuizCard,{marginTop:60}]}>
+                    <Text style={styles.WhiteText}>Results:</Text>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={[styles.WhiteText,{ fontSize: 36, color:'rgb(250,200,90)'}]}>{this.percent}% correct!</Text> 
+                    </View>
+                    <Text style={styles.WhiteText}>Got {this.props.numberCorrect} out of {this.props.total} flash cards</Text>      
+                    <TouchableOpacity 
+                        style={[styles.ToggleButtton, {alignItems: 'center', backgroundColor:'rgb(20,180,200)', marginTop: 30}]}
+                        onPress={this.props.restartQuiz}
+                    >
+                        <Text style={styles.WhiteText}>Tap to restart</Text>
+                    </TouchableOpacity>              
+                </View>
+            </ScrollView>
+        )
+    }
+}
 
 class QuizCard extends Component {
 
@@ -47,6 +70,18 @@ class QuizView extends Component {
         }
     }
 
+    restartQuiz = () => {
+
+        this.questionsArray = this.shuffle(this.deck.questions);
+
+        this.setState({
+            index: 0,
+            showAnswer: false,
+            numberCorrect: 0,
+            showResults: false,
+        })
+    }
+
     moveNextQuestion = () => {
         if(this.state.index < this.questionsArray.length - 1)
             this.setState ((prevState, props) => ({ index: prevState.index + 1, showAnswer: false }));
@@ -82,9 +117,11 @@ class QuizView extends Component {
         return (
             <ScrollView>
                 {this.state.showResults
-                ? <View>
-                    <Text>THIS IS THE RESULTS SCREEN: {this.state.numberCorrect}</Text>
-                  </View>
+                ? <ResultsCard
+                    total={this.questionsArray.length}
+                    numberCorrect={this.state.numberCorrect}
+                    restartQuiz={this.restartQuiz}
+                />
                 : <View>
                     <Text style={[styles.DarkText, {marginTop: 40, marginLeft: 22, alignItems: 'center'}]}>Flashcard {this.state.index + 1} out of {this.questionsArray.length}...</Text>
                     <QuizCard
