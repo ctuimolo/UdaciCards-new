@@ -37,6 +37,7 @@ class QuizView extends Component {
             index: 0,
             showAnswer: false,
             numberCorrect: 0,
+            showResults: false,
         }
     }
 
@@ -49,6 +50,8 @@ class QuizView extends Component {
     moveNextQuestion = () => {
         if(this.state.index < this.questionsArray.length - 1)
             this.setState ((prevState, props) => ({ index: prevState.index + 1, showAnswer: false }));
+        else
+            this.setState ({ showResults: true });
     }
 
     correctAndMovenextQuestion = () => {
@@ -78,20 +81,26 @@ class QuizView extends Component {
     render() {
         return (
             <ScrollView>
-                <Text style={[styles.DarkText, {marginTop: 40, marginLeft: 22, alignItems: 'center'}]}>Flashcard {this.state.index + 1} out of {this.questionsArray.length}...</Text>
-                <QuizCard
-                    showAnswer={this.state.showAnswer}
-                    setShowAnswer={(value) => this.setState({showAnswer: value})}
-                    question={this.questionsArray[this.state.index].question}
-                    answer={this.questionsArray[this.state.index].answer}
-                />
-                <TouchableOpacity style={styles.CorrectButtton} onPress={this.correctAndMovenextQuestion}>
-                    <Text style={styles.WhiteText}>I got it!</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.IncorrectButtton} onPress={this.moveNextQuestion}>
-                    <Text style={styles.WhiteText}>I didn't get it...</Text>
-                </TouchableOpacity>
-                <Text>{this.state.numberCorrect}</Text>
+                {this.state.showResults
+                ? <View>
+                    <Text>THIS IS THE RESULTS SCREEN: {this.state.numberCorrect}</Text>
+                  </View>
+                : <View>
+                    <Text style={[styles.DarkText, {marginTop: 40, marginLeft: 22, alignItems: 'center'}]}>Flashcard {this.state.index + 1} out of {this.questionsArray.length}...</Text>
+                    <QuizCard
+                        showAnswer={this.state.showAnswer}
+                        setShowAnswer={(value) => this.setState({showAnswer: value})}
+                        question={this.questionsArray[this.state.index].question}
+                        answer={this.questionsArray[this.state.index].answer}
+                    />
+                    <TouchableOpacity style={styles.CorrectButtton} onPress={this.correctAndMovenextQuestion}>
+                        <Text style={styles.WhiteText}>I got it!</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.IncorrectButtton} onPress={this.moveNextQuestion}>
+                        <Text style={styles.WhiteText}>I didn't get it...</Text>
+                    </TouchableOpacity>
+                </View>
+                }
             </ScrollView>           
         )
     }
