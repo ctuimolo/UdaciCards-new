@@ -1,3 +1,5 @@
+import { AsyncStorage } from 'react-native';
+
 export const testDeck1 = {
     title: 'Test deck 1',
     questions: [
@@ -74,6 +76,28 @@ export const testDeck3 = {
           answer: 'The componentDidMount lifecycle event'
         },
     ]
+}
+
+export async function createNewDeck(deckTitle) {
+
+  let newDeck = {};
+  newDeck.title = deckTitle;
+  newDeck.questions = [];
+
+  let data = await AsyncStorage.getItem('data');
+  if( data !== null ) {
+    dataObj = JSON.parse(data);
+    dataObj.decks.push(newDeck);
+    let newData = JSON.stringify(dataObj);
+    AsyncStorage.setItem('data', newData);
+
+  } else {
+    let dataObj = {};
+    dataObj["decks"] = [];
+    dataObj.decks.push(newDeck);
+    let newData = JSON.stringify(dataObj);
+    AsyncStorage.setItem('data', newData);
+  }
 }
 
 export const emptyDeck = {

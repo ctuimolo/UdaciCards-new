@@ -47,7 +47,7 @@ class DeckView extends Component {
                     {this.deck.questions.length > 0 
                      ? <QuizButton navigateToQuiz={this.navigateToQuiz}/>
                      : <View style={styles.Notification}>
-                            <Text style={styles.WhiteText}>Add a question to make a flashcard</Text>
+                            <Text style={styles.WhiteText}>Add a question to make a quiz</Text>
                        </View>
                     }
                     {this.deck.questions.map((question) => (

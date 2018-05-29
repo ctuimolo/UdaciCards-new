@@ -10,9 +10,6 @@ import QuizView from './components/QuizView'
 function Home (props) {
   return (
     <View>
-      <TouchableOpacity style={styles.NewDeckHeader} onPress={() => props.navigation.navigate('NewDeck')}>
-        <Text style={styles.NewDeckText}>+ Add New Deck</Text>
-      </TouchableOpacity>
       <DeckList navigation={props.navigation}/>
     </View>
   )
@@ -70,6 +67,7 @@ const AppNavigator = createStackNavigator ({
 })
 
 export default class App extends React.Component {
+
   render() {
     return (
       <View style={{flex: 1, backgroundColor: 'rgba(220,220,220,1.0)'}}>
@@ -78,19 +76,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  NewDeckHeader: {
-    padding: 0,
-    paddingTop: 12,
-    paddingBottom: 12,
-    alignItems: 'center',
-    borderColor: 'rgba(100,100,100,1.0)',
-    borderWidth: 2,
-    borderBottomRightRadius: 6,
-    borderBottomLeftRadius: 6,
-  },
-  NewDeckText: {
-    fontSize: 20,
-  },
-})

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation'
 import { emptyDeck } from '../api'
+import { createNewDeck } from '../api'
 
 class SubmitButton extends Component {
 
@@ -29,14 +30,35 @@ class NewDeck extends Component {
        this.state = {
            text: '',
        }
+       this.submitDeck = this.submitDeck.bind(this);
     }
 
-    submitDeck = () => {
+    async submitDeck() {
+
+        let newDeck = {};
+        newDeck.title = this.state.text;
+        newDeck.questions = [];
+
+        let data = await AsyncStorage.getItem('data');
+        if( data !== null ) {
+            dataObj = JSON.parse(data);
+            dataObj.decks.push(newDeck);
+            let newData = JSON.stringify(dataObj);
+            AsyncStorage.setItem('data', newData);
+
+        } else {
+            let dataObj = {};
+            dataObj["decks"] = [];
+            dataObj.decks.push(newDeck);
+            let newData = JSON.stringify(dataObj);
+            AsyncStorage.setItem('data', newData);
+        }
+
         this.props.navigation.dispatch(StackActions.reset({
             index: 1,
             actions: [
                 NavigationActions.navigate({ routeName: 'Home' }),
-                NavigationActions.navigate({ routeName: 'DeckView', params: {deck: emptyDeck }}),
+                NavigationActions.navigate({ routeName: 'DeckView', params: {deck: newDeck }}),
             ]
         }));    
     };
@@ -96,7 +118,7 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         alignItems: 'center'
-    }
+    },    
 });
   
 export default NewDeck;
