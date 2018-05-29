@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, AsyncStorage } from 'react-native';
 
 function QuestionTab (props) {
     return (
@@ -23,7 +23,14 @@ class QuizButton extends Component {
 
 class DeckView extends Component {
 
-    deck = this.props.navigation.state.params.deck;
+    
+    constructor(props) {
+        super(props);
+        this.state = {
+            deck: {},
+            questions: [],
+        }
+    }
 
     static navigationOptions = ({ navigation }) => {
         return {
@@ -31,28 +38,48 @@ class DeckView extends Component {
         }
     }
 
+    componentDidMount() {
+        let deckTitle = this.props.navigation.state.params.deck.title;
+        AsyncStorage.getItem('data')
+            .then((data) => {
+                if(data !== null){
+                    let decksArray = JSON.parse(data).decks;
+                    for (var i in decksArray) {
+                        let deck = decksArray[i];
+                        if (deckTitle === deck.title){
+                            this.setState({
+                                deck: deck,
+                                questions: deck.questions
+                            })
+                        }
+                    }                           
+                }
+            })
+    }
+
     navigateToQuiz = () => {
-        this.props.navigation.navigate('QuizView',{deck: this.deck});
+        this.props.navigation.navigate('QuizView',{deck: this.state.deck});
     };
 
     render() {
 
         return (
             <View style={{paddingBottom: 50}}>
-                <TouchableOpacity style={styles.AddQuestionHeader} onPress={() => {this.props.navigation.navigate('NewQuestion')}}>
+                <TouchableOpacity style={styles.AddQuestionHeader} onPress={() => {this.props.navigation.navigate('NewQuestion', {deckTitle: this.state.deck.title}) }}>
                    <Text style={styles.AddQuestionText}>+ Add New Question</Text>
                 </TouchableOpacity>
                 <ScrollView>
-                    <Text style={[styles.DarkText, {marginLeft: 22, marginTop: 20}]}>This deck has {this.deck.questions.length} flashcards...</Text>
-                    {this.deck.questions.length > 0 
+                    <Text style={[styles.DarkText, {marginLeft: 22, marginTop: 20}]}>This deck has {this.state.questions.length} flashcards...</Text>
+                    {this.state.questions.length > 0 
                      ? <QuizButton navigateToQuiz={this.navigateToQuiz}/>
                      : <View style={styles.Notification}>
                             <Text style={styles.WhiteText}>Add a question to make a quiz</Text>
                        </View>
                     }
-                    {this.deck.questions.map((question) => (
-                        <QuestionTab question={question} key={Math.random()}/>
-                    ))}               
+                    {this.state.questions.map((question) => (
+                        <QuestionTab question={question} key={question.question}/>
+                    ))}
+                    <View style={{paddingBottom: 100}}/>                                                                                                       
                 </ScrollView>
             </View>
         )

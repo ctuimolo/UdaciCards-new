@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 
 class SubmitButton extends Component {
@@ -29,9 +29,33 @@ class NewQuestion extends Component {
            questionText: '',
            answerText: '',
        }
+       this.submitQuestion = this.submitQuestion.bind(this);
     }
 
-    submitQuestion = () => {
+    componentDidMount() {
+        this.deckTitle = this.props.navigation.state.params.deckTitle;
+    }
+
+    async submitQuestion () {
+
+        newQuestion = {
+            question: this.state.questionText,
+            answer: this.state.answerText,
+        }
+
+        let data = await AsyncStorage.getItem('data');
+        let dataObj = JSON.parse(data);
+        let decksArray = dataObj["decks"];
+        for(var i in decksArray) {
+            var deck = decksArray[i];
+            if (this.deckTitle === deck.title) {
+                newArray = deck.questions;
+                newArray.push(newQuestion);
+                let newData = JSON.stringify(newArray);
+                AsyncStorage.setItem('data', newData);   
+            }
+        }
+
         this.props.navigation.goBack();
     };
 

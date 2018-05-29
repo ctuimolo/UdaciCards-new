@@ -35,22 +35,24 @@ class NewDeck extends Component {
 
     async submitDeck() {
 
-        let newDeck = {};
+        var newDeck = {};
         newDeck.title = this.state.text;
         newDeck.questions = [];
 
-        let data = await AsyncStorage.getItem('data');
+        var data = await AsyncStorage.getItem('data');
         if( data !== null ) {
-            dataObj = JSON.parse(data);
+            var dataObj = {};
+            dataObj["decks"] = JSON.parse(data).decks;
             dataObj.decks.push(newDeck);
-            let newData = JSON.stringify(dataObj);
+            var newData = JSON.stringify(dataObj);
             AsyncStorage.setItem('data', newData);
 
         } else {
-            let dataObj = {};
+            var dataObj = {};
             dataObj["decks"] = [];
             dataObj.decks.push(newDeck);
-            let newData = JSON.stringify(dataObj);
+            var newData = JSON.stringify(dataObj);
+            alert(newData);
             AsyncStorage.setItem('data', newData);
         }
 

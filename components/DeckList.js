@@ -9,6 +9,7 @@ import { createNewDeck } from '../api'
 
 class DeckList extends Component {
 
+
     constructor(props) {
         super(props);
         this.state = {
@@ -24,7 +25,7 @@ class DeckList extends Component {
         AsyncStorage.getItem('data')
             .then( (data) => {
                 if(data !== null) {
-                    let decksArray = JSON.parse(data).decks;
+                    var decksArray = JSON.parse(data).decks;
                     this.setState({
                         deckList: decksArray
                     })
@@ -37,19 +38,20 @@ class DeckList extends Component {
             <View style={{paddingBottom: 100}}>
                 <TouchableOpacity 
                     style={styles.NewDeckHeader} 
-                    onPress={() => this.props.navigation.navigate('NewDeck',{updateList: this.updateList})}
+                    onPress={() => this.props.navigation.navigate('NewDeck')}
                 >
                     <Text style={styles.NewDeckText}>+ Add New Deck</Text>
                 </TouchableOpacity>
                 <ScrollView >
                     <Text style={[styles.DarkText, {marginTop: 20, marginLeft: 22}]}>Select a deck...</Text>
-                    {this.state.deckList.map((deck) => {
+                    {this.state.deckList.length > 0 ? this.state.deckList.map((deck) => {
                         return <DeckTab 
                             key={deck.title} 
                             navigation={this.props.navigation} 
                             deck={deck}
                             /> 
-                    })}                                                                    
+                    }) : <View/>}
+                    <View style={{paddingBottom: 100}}/>                                                                    
                 </ScrollView>
           </View>            
         )
