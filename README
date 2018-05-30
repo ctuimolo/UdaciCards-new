@@ -1,0 +1,76 @@
+This project was bootstrapped with Create React Native App (https://github.com/react-community/create-react-native-app).
+This project was developed according to Udacity's 3rd online project: Mobile Flashcards
+
+Submission: Chaiz Tuimoloau
+Title: UdaciCards
+5/30/2018
+
+DEVELOPMENT ENVIRONMENT:
+This project was developed and tested on a Google Pixel 2, Android 8.1.0, through Expo, client version 2.5.2
+Built and run primarily on the device connected via USB.
+
+INSTALATION:
+(Recommended Android running Expo device connected via USB with Create React Native, 
+emulation and other devices not thoroughly tested)
+
+> npm install
+> npm start
+[... then select prefered Create React Native booting procedure]
+
+FUNCTIONALITY:
+
+Below are the app's views,
+
+{DECK LIST}
+App launches to this view, and all current decks with flashcard numbers can be viewed. Add a new deck by hitting
+the top "+ Add New Deck" tab. Pressing the tab will navigate to {NEW DECK} view, after decks have been added,
+click on a deck tab to navigate to that deck's {DECK VIEW} view.
+
+{NEW DECK}
+Inputing a deck title in the field will let you press the submit button to navigate you to that respective
+{DECK VIEW} and add the deck to your devices memory. You can back out of this view by hitting the top left
+"<<" back button.
+
+{DECK VIEW}: lists deck name
+Lists a deck and its associated questions. A new deck will initialize with no questions, hit the "+ Add Question"
+tab at the top to add new questions in a similar view to the {NEW DECK} view. After questions have been added
+you may click the "Go to quiz" button at the top to open up that deck's {QUIZ VIEW}. The top left "<<" back button
+will navigate back to the main {DECK LIST}
+
+{NEW QUESTION}
+Filling out both forms will allow you to add a question to the deck who's deck view you just navigated from. 
+The top left "<<" back button will cancel this view and go back to {DECK LIST}
+
+{QUIZ VIEW}
+Opens respective deck's quiz window. The quiz randomly cycles through each deck's flashcard once allowing the user
+to submit the flashcard with a "I got it!" or "I didn't get it..." button. The user is intended to guess the
+flashcard's associated answer to its shown question; they may view the flashcards hidden answer by pressing the
+"Show Answer" button on the flashcard. 
+
+When all flashcards have been submitted they are shown a results percentage
+with how many cards were submitted with a corrected guess out of the total deck. They may repeat the quiz at 
+the end or go back to {DECK VIEW} by hitting the "<<" back button in the top left at any screen on this view.
+
+Completing any deck's quiz in any percantage at least once will clear that day's notification if they have not
+taken a quiz after 12:00pm that day.
+
+NOTES:
+
+Notifications: Local android push notifications have been tested and confirmed to work on a device. The push notification
+will pop up at 12:00pm after launching the app, and can be cleared manually or automatically by clearing a quiz. 
+the {app}/utils/helpers file holds the methods which are called to allocate and spawn the notifications.
+App.js and {app}/components/QuizView.js are the only components in charge of the AsyncStorage calls for notifications if you
+need to confirm they should be working. (Mentioned because I have had a hard time confirming conistently that the notifications
+are indeed being set)
+
+Android/IOS: Device not tested on IOS, and not thoroughly tested with native Android buttons such as the Android 'back button'
+in the bottom toolbar. StackNavigation methods were overwritten with this app to maintain some functionalities and so 
+consequentially the back button will not always 'pop' off a StackNavigator view to the previous view. On most views directly
+connected to {DECK VIEW} such as opening the {QUIZ VIEW}, the back button will work.
+
+Animations: Animations confirmed to work when moving from {DECK LIST} to {DECK VIEW} when clicking on a deck's tab. Animations
+also confirmed to work moving into and out of {QUIZ VIEW}. Animations not confirmed to work in other views transitions.
+
+Inconsistent errors: One error has been recorded but not yet understood how to replicate and is maybe related to some Expo 
+desync. Upon launching the app from Create React Native on a device sometimes the error will throw but will disappear on reload.
+Has been recorded in somewhere around 1 out of 50 launches.
