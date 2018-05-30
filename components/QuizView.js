@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { clearLocalNotification, setLocalNotification } from '../utils/helpers'
+import { NavigationActions, StackActions } from 'react-navigation'
 
 class ResultsCard extends Component {
 
@@ -28,6 +30,8 @@ class ResultsCard extends Component {
 
 class QuizCard extends Component {
 
+
+    
     render() {
         return (
             <View style={styles.QuizCard}>
@@ -70,6 +74,12 @@ class QuizView extends Component {
         }
     }
 
+    static navigationOptions = ({ navigation, screenProps}) => ({
+        title: "Deck Quiz: " + navigation.getParam('deck').title,
+        headerLeft: <TouchableOpacity
+            onPress={ () => navigation.dispatch(StackActions.pop())} ><Text style={{color:'white',fontSize:30,fontWeight:'bold'}}>{'  <<'}</Text></TouchableOpacity>,
+    })
+    
     restartQuiz = () => {
 
         this.questionsArray = this.shuffle(this.deck.questions);
@@ -85,8 +95,11 @@ class QuizView extends Component {
     moveNextQuestion = () => {
         if(this.state.index < this.questionsArray.length - 1)
             this.setState ((prevState, props) => ({ index: prevState.index + 1, showAnswer: false }));
-        else
+        else {
+            clearLocalNotification()
+                .then(setLocalNotification);
             this.setState ({ showResults: true });
+        }
     }
 
     correctAndMovenextQuestion = () => {

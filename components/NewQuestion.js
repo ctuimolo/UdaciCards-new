@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, AsyncStorage } from 'react-native';
-import { NavigationActions } from 'react-navigation'
+import { StackActions, NavigationActions } from 'react-navigation'
 
 class SubmitButton extends Component {
 
@@ -32,8 +32,18 @@ class NewQuestion extends Component {
        this.submitQuestion = this.submitQuestion.bind(this);
     }
 
+    static navigationOptions = ({ navigation, screenProps}) => ({
+        headerLeft: <TouchableOpacity
+            onPress={ () => { navigation.dispatch(StackActions.reset({
+                index: 0,
+                actions: [
+                    NavigationActions.navigate({ routeName: 'Home'}),
+                ]
+            }))}} ><Text style={{color:'white',fontSize:30,fontWeight:'bold'}}>{'  <<'}</Text></TouchableOpacity>,           
+    })
+
     componentDidMount() {
-        this.deckTitle = this.props.navigation.state.params.deckTitle;
+        this.deckTitle  = this.props.navigation.state.params.deckTitle;
     }
 
     async submitQuestion () {
@@ -43,20 +53,22 @@ class NewQuestion extends Component {
             answer: this.state.answerText,
         }
 
-        let data = await AsyncStorage.getItem('data');
-        let dataObj = JSON.parse(data);
-        let decksArray = dataObj["decks"];
-        for(var i in decksArray) {
-            var deck = decksArray[i];
-            if (this.deckTitle === deck.title) {
-                newArray = deck.questions;
-                newArray.push(newQuestion);
-                let newData = JSON.stringify(newArray);
+        var data = await AsyncStorage.getItem('data');
+        var dataObj = JSON.parse(data);
+        for(var i in dataObj["decks"]) {
+            if (this.deckTitle === dataObj["decks"][i].title) {
+                dataObj["decks"][i].questions.push(newQuestion);
+                var newData = JSON.stringify(dataObj);
                 AsyncStorage.setItem('data', newData);   
             }
         }
 
-        this.props.navigation.goBack();
+        this.props.navigation.dispatch(StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'DeckView', params: {deckTitle: this.deckTitle }}),
+            ]
+        }));    
     };
 
     render () {

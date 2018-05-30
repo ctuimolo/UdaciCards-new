@@ -6,7 +6,7 @@ class DeckTab extends Component {
 
     render() {
         return (
-            <TouchableOpacity style={styles.DeckTab} onPress={() => this.props.navigation.navigate('DeckView', {deck: this.props.deck})}>
+            <TouchableOpacity style={styles.DeckTab} onPress={() => this.props.navigation.navigate('DeckView', {deckTitle: this.props.deck.title, updateList: this.props.updateList})}>
                 <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>{this.props.deck.title}</Text>
                 <Text style={{color: 'white', fontSize: 20}}> Cards: {this.props.deck.questions.length}</Text>                
             </TouchableOpacity>

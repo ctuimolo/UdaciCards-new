@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, AsyncStorage, DeviceEventEmitter } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation'
 import { emptyDeck } from '../api'
 import { createNewDeck } from '../api'
@@ -33,6 +33,16 @@ class NewDeck extends Component {
        this.submitDeck = this.submitDeck.bind(this);
     }
 
+    static navigationOptions = ({ navigation, screenProps}) => ({
+        headerLeft: <TouchableOpacity
+            onPress={ () => navigation.dispatch(StackActions.reset({
+                index: 0,
+                actions: [
+                    NavigationActions.navigate({ routeName: 'Home' }),
+                ]
+            }))} ><Text style={{color:'white',fontSize:30,fontWeight:'bold'}}>{'  <<'}</Text></TouchableOpacity>,           
+    })
+
     async submitDeck() {
 
         var newDeck = {};
@@ -45,22 +55,20 @@ class NewDeck extends Component {
             dataObj["decks"] = JSON.parse(data).decks;
             dataObj.decks.push(newDeck);
             var newData = JSON.stringify(dataObj);
-            AsyncStorage.setItem('data', newData);
+            await AsyncStorage.setItem('data', newData);
 
         } else {
             var dataObj = {};
             dataObj["decks"] = [];
             dataObj.decks.push(newDeck);
             var newData = JSON.stringify(dataObj);
-            alert(newData);
-            AsyncStorage.setItem('data', newData);
+            await AsyncStorage.setItem('data', newData);
         }
 
         this.props.navigation.dispatch(StackActions.reset({
-            index: 1,
+            index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: 'Home' }),
-                NavigationActions.navigate({ routeName: 'DeckView', params: {deck: newDeck }}),
+                NavigationActions.navigate({ routeName: 'DeckView', params: {deckTitle: newDeck.title }}),
             ]
         }));    
     };

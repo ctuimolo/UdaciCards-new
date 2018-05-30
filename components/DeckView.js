@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, AsyncStorage } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation'
 
 function QuestionTab (props) {
     return (
@@ -34,18 +35,29 @@ class DeckView extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
-            title: navigation.getParam('deck').title,
+            title: navigation.getParam('deckTitle'),
         }
     }
 
+    static navigationOptions = ({ navigation, screenProps}) => ({
+        title: navigation.getParam('deckTitle'),
+        headerLeft: <TouchableOpacity
+            onPress={ () => navigation.dispatch(StackActions.reset({
+                index: 0,
+                actions: [
+                    NavigationActions.navigate({ routeName: 'Home' }),
+                ]
+            }))} ><Text style={{color:'white',fontSize:30,fontWeight:'bold'}}>{'  <<'}</Text></TouchableOpacity>,
+    })
+
     componentDidMount() {
-        let deckTitle = this.props.navigation.state.params.deck.title;
+        var deckTitle = this.props.navigation.state.params.deckTitle;
         AsyncStorage.getItem('data')
             .then((data) => {
                 if(data !== null){
-                    let decksArray = JSON.parse(data).decks;
+                    var decksArray = JSON.parse(data).decks;
                     for (var i in decksArray) {
-                        let deck = decksArray[i];
+                        var deck = decksArray[i];
                         if (deckTitle === deck.title){
                             this.setState({
                                 deck: deck,
@@ -65,7 +77,12 @@ class DeckView extends Component {
 
         return (
             <View style={{paddingBottom: 50}}>
-                <TouchableOpacity style={styles.AddQuestionHeader} onPress={() => {this.props.navigation.navigate('NewQuestion', {deckTitle: this.state.deck.title}) }}>
+                <TouchableOpacity style={styles.AddQuestionHeader} onPress={ () => this.props.navigation.dispatch(StackActions.reset({
+                        index: 0,
+                        actions: [
+                            NavigationActions.navigate({ routeName: 'NewQuestion', params:{deckTitle: this.state.deck.title} }),
+                        ]
+                    }))}>
                    <Text style={styles.AddQuestionText}>+ Add New Question</Text>
                 </TouchableOpacity>
                 <ScrollView>

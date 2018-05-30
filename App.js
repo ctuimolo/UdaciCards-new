@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Icon } from 'react-native';
 import { createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
 import DeckList from './components/DeckList'
 import DeckView from './components/DeckView'
 import NewDeck from './components/NewDeck'
 import NewQuestion from './components/NewQuestion'
 import QuizView from './components/QuizView'
+import { setLocalNotification, clearLocalNotification } from './utils/helpers';
 
 function Home (props) {
   return (
@@ -67,6 +68,11 @@ const AppNavigator = createStackNavigator ({
 })
 
 export default class App extends React.Component {
+
+  componentDidMount() {
+    clearLocalNotification();
+    setLocalNotification();
+  }
 
   render() {
     return (
